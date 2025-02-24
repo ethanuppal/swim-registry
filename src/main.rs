@@ -14,6 +14,9 @@ use log::{info, warn};
 use rand_core::{OsRng, RngCore};
 use serde::{Deserialize, Serialize};
 use snafu::{ResultExt, Whatever};
+use swim_registry::{
+    LoginRequest, LoginResponse, LogoutRequest, LogoutResponse, SignupRequest, SignupResponse,
+};
 use tokio::sync::Mutex;
 
 #[derive(Debug, Clone)]
@@ -27,18 +30,6 @@ struct AppState {
     token_rng: OsRng,
     users: HashMap<String, PasswordHashString>,
     sessions: HashMap<u128, Session>,
-}
-
-#[derive(Deserialize)]
-struct SignupRequest {
-    username: String,
-    password: String,
-}
-
-#[derive(Serialize)]
-enum SignupResponse {
-    Success,
-    Failure(String),
 }
 
 //#[axum::debug_handler]
@@ -68,21 +59,9 @@ async fn signup(
     }
 }
 
-#[derive(Deserialize)]
-struct LoginRequest {
-    username: String,
-    password: String,
-}
-
-#[derive(Serialize)]
-enum LoginResponse {
-    Success { token: u128 },
-    Failure(String),
-}
-
 async fn login(
     State(state): State<Arc<Mutex<AppState>>>,
-    Json(request): Json<SignupRequest>,
+    Json(request): Json<LoginRequest>,
 ) -> Json<LoginResponse> {
     let mut state = state.lock().await;
 
@@ -120,18 +99,6 @@ async fn login(
     info!("current sessions: {:?}", state.sessions);
 
     Json(LoginResponse::Success { token })
-}
-
-#[derive(Deserialize)]
-struct LogoutRequest {
-    token: u128,
-    all: bool,
-}
-
-#[derive(Serialize)]
-enum LogoutResponse {
-    Success,
-    Failure(String),
 }
 
 async fn logout(

@@ -8,7 +8,11 @@ Run the backend server:
 cargo run
 ```
 
+It will serve to port 3000.
+
 ## API
+
+You should use `serde_json` with the definitions in [`lib.rs`](./src/lib.rs).
 
 ### `POST /signup`
 
@@ -29,9 +33,13 @@ cargo run
 </td>
 <td>
 
+**Success**
+
 ```json
 "Success"
 ```
+
+**Failure**
 
 ```json
 {
@@ -62,6 +70,8 @@ cargo run
 </td>
 <td>
 
+**Success**
+
 ```json
 {
     "Success": {
@@ -70,6 +80,8 @@ cargo run
 }
 ```
 (`123` is an example here.)
+
+**Failure**
 
 ```json
 {
@@ -102,9 +114,13 @@ If `all` is `true`, all current sessions will be logged out.
 </td>
 <td>
 
+**Success**
+
 ```json
 "Success"
 ```
+
+**Failure**
 
 ```json
 {
